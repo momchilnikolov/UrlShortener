@@ -36,7 +36,7 @@ namespace UrlShortenerApp.Controllers
             regex = new Regex(@"(?<Protocol>\w+):\/\/(?<Domain>[\w@][\w.:@]+)\/?[\w\.?=%&=\-@/$,]*");
             Match match = regex.Match(shortenedUrl);
 
-            return string.Format(match.Value);
+            return match.Success ? match.Value : result;
         }
     }
 }

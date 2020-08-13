@@ -10,19 +10,21 @@ namespace UrlShortenerLib
     public class UrlShortener
     {
         private AppSettings appSettings;
+        private static HttpClient client = new HttpClient();
         public UrlShortener() { }
         public UrlShortener(AppSettings  configuration)
         {
             appSettings = configuration;
         }
-        static HttpClient client = new HttpClient();
 
         public async Task<string> Shorten(string urlToShorten)
         {
             try
             {
-                //instantiate http client
-                client.BaseAddress = new Uri(appSettings.ServiceAPIBase);
+                //set client base address if not already set
+                if (client.BaseAddress == null)
+                    client.BaseAddress = new Uri(appSettings.ServiceAPIBase);
+                
                 //use configuration settings to build paramer list to service API
                 var parameterString = string.Format("{0}={1}", appSettings.ServiceApiParamName, urlToShorten);
                 var stringContent = new StringContent(parameterString, Encoding.UTF8, "application/x-www-form-urlencoded");
@@ -33,9 +35,9 @@ namespace UrlShortenerLib
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsStringAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return "There was an error shortening your url.";
+                return "There was an error shortening your url: " + ex.Message;
             }
         }
     }
