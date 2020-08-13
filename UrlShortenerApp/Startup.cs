@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using UrlShortenerApp.Configuration;
+using UrlShortenerLib;
 
 namespace UrlShortenerApp
 {
@@ -29,7 +31,7 @@ namespace UrlShortenerApp
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
+            services.Configure<AppSettings>(options => Configuration.GetSection("UrlShortenerSettings").Bind(options));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
